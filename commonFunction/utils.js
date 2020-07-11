@@ -10,11 +10,15 @@ module.exports.Success_Code = Object.freeze({
 });
 
 module.exports.Error_Message = Object.freeze({
-  InternalError: "Internal Server Error",
-  EmailExist: "Email Already Exist",
+  InternalError: "Internal Server Error.",
+  EmailExist: "Email Already Exist.",
   NameExist: "UserName Already Exist.",
-  NotMatch:"Passwords don't Match."
+  NotMatch:"Passwords don't Match.",
+  InvalidLogin:"Invalid Login.",
+  NotExist:"User Doesnot Exist."
+
 });
 module.exports.Success_Message = Object.freeze({
   SignUp_Successfully: "Thank you, You are successfully SignUp.",
+  Login:"Login Successfully."
 });

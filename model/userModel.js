@@ -1,5 +1,6 @@
 const mongoose = require("mongoose");
 var utils = require("../commonFunction/utils");
+var bcrypt = require("bcrypt");
 
 var schema = mongoose.Schema;
 var userkey = new schema(
@@ -29,7 +30,7 @@ var userkey = new schema(
 );
 const userModel = mongoose.model("user", userkey, "user");
 
-userModel["SignUp"] = async (body, res,next) => {
+(userModel["SignUp"] = async (body, res, next) => {
   try {
     var query = {
       $or: [{ email: body.email }, { userName: body.userName }],
@@ -46,10 +47,31 @@ userModel["SignUp"] = async (body, res,next) => {
           .send(utils.Error_Message.NameExist);
       }
     }
-   
   } catch (error) {
     throw error;
   }
-};
+}),
+  (userModel["logIn"] = async (body, res) => {
+    try {
+      var query = { userName: body.userName };
+      var fetch = await userModel.findOne(query);
+      if (fetch) {
+        var hash = fetch.password;
+        var pass = await bcrypt.compare(body.password, hash);
+
+        if (pass == false) {
+          res
+            .status(utils.Error_Code.NotMatch)
+            .send(utils.Error_Message.InvalidLogin);
+        }
+      } else {
+        res
+          .status(utils.Error_Code.NotFound)
+          .send(utils.Error_Message.NotExist);
+      }
+    } catch (error) {
+      throw error;
+    }
+  });
 
 module.exports = userModel;

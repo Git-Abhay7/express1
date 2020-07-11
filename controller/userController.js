@@ -1,5 +1,6 @@
 var user = require("../model/userModel");
 const bcrypt = require("bcrypt");
+const jwt = require("jsonwebtoken");
 var utils = require("../commonFunction/utils");
 
 module.exports = {
@@ -22,6 +23,24 @@ module.exports = {
           )
           .send(utils.Success_Message.SignUp_Successfully);
       }
+    } catch (error) {
+      res
+        .status(
+          utils.Error_Code.Internal_Error,
+          utils.Error_Message.InternalError
+        )
+        .send(utils.Error_Message.InternalError);
+    }
+  },
+  login: async (req, res) => {
+    await user.logIn(req.body, res);
+    try {
+      const token = await jwt.sign({ email: req.body.email }, "express");
+
+      res
+        .status(utils.Success_Code.Success)
+        .send(utils.Success_Message.Login)
+        .send({ token: token });
     } catch (error) {
       res
         .status(

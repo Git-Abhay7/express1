@@ -19,4 +19,10 @@ module.exports = {
         .withMessage("Please fill confirm password field ."),
     ];
   },
+  loginValidation:()=>{
+    return [
+      check("userName").notEmpty().withMessage("Please enter userName."),
+      check("password").notEmpty().withMessage("please enter password."),
+    ]
+  }
 };
