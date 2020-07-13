@@ -33,12 +33,10 @@ module.exports = {
   login: async (req, res) => {
     await user.logIn(req.body, res);
     try {
-      const token = await jwt.sign(
-        {
+      const token = await jwt.sign({
           userName: req.body.userName,
         },
-        "express",
-        {
+        "express", {
           expiresIn: 60 * 60,
         }
       );
