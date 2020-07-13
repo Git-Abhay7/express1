@@ -15,10 +15,12 @@ module.exports.Error_Message = Object.freeze({
   NameExist: "UserName Already Exist.",
   NotMatch:"Passwords don't Match.",
   InvalidLogin:"Invalid Login.",
-  NotExist:"User Doesnot Exist."
+  NotExist:"User Doesnot Exist.",
+  Not_Found: "Token Not Found."
 
 });
 module.exports.Success_Message = Object.freeze({
   SignUp_Successfully: "Thank you, You are successfully SignUp.",
-  Login:"Login Successfully."
+  Login:"Login Successfully.",
+  DataFound:"Data Found Successfully."
 });
