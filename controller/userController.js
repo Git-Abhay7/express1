@@ -33,10 +33,12 @@ module.exports = {
   login: async (req, res) => {
     await user.logIn(req.body, res);
     try {
-      const token = await jwt.sign({
+      const token = await jwt.sign(
+        {
           userName: req.body.userName,
         },
-        "express", {
+        "express",
+        {
           expiresIn: 60 * 60,
         }
       );
@@ -57,7 +59,34 @@ module.exports = {
       });
       res.status(utils.Success_Code.Success).send(Found);
     } catch (error) {
-      throw error;
+      res
+        .status(utils.Error_Code.Internal_Error)
+        .send(utils.Error_Message.InternalError);
+    }
+  },
+  deleteUser: async (req, res) => {
+    try {
+      await user.findOneAndDelete({
+        email: req.User,
+      });
+      res
+        .status(utils.Success_Code.Success)
+        .send(utils.Success_Message.Deleted);
+    } catch (error) {
+      res
+        .status(utils.Error_Code.Internal_Error)
+        .send(utils.Error_Message.InternalError);
+    }
+  },
+  listUser: async (req, res) => {
+    var Fetch = await user.ListUser(req.params, res);
+    // console.log(Fetch)
+    try {
+     res.status(utils.Success_Code.Success).send(Fetch);
+    } catch {
+      res
+        .status(utils.Error_Code.Internal_Error)
+        .send(utils.Error_Message.InternalError);
     }
   },
 };

@@ -1,4 +1,5 @@
 const mongoose = require("mongoose");
+const mongoosePaginate = require("mongoose-paginate");
 var utils = require("../commonFunction/utils");
 var bcrypt = require("bcrypt");
 
@@ -28,12 +29,20 @@ var userkey = new schema(
     timestamps: true,
   }
 );
+userkey.plugin(mongoosePaginate);
 const userModel = mongoose.model("user", userkey, "user");
 
 (userModel["SignUp"] = async (body, res, next) => {
   try {
     var query = {
-      $or: [{ email: body.email }, { userName: body.userName }],
+      $or: [
+        {
+          email: body.email,
+        },
+        {
+          userName: body.userName,
+        },
+      ],
     };
     var result = await userModel.findOne(query);
     if (result) {
@@ -53,7 +62,9 @@ const userModel = mongoose.model("user", userkey, "user");
 }),
   (userModel["logIn"] = async (body, res) => {
     try {
-      var query = { userName: body.userName };
+      var query = {
+        userName: body.userName,
+      };
       var fetch = await userModel.findOne(query);
       if (fetch) {
         var hash = fetch.password;
@@ -68,6 +79,28 @@ const userModel = mongoose.model("user", userkey, "user");
         res
           .status(utils.Error_Code.NotFound)
           .send(utils.Error_Message.NotExist);
+      }
+    } catch (error) {
+      throw error;
+    }
+  }),
+  (userModel["ListUser"] = async (params, res) => {
+    try {
+      var query = {};
+      var options = {
+        page: params.page || 1,
+        limit: 10,
+        sort: {
+          createdAt: -1,
+        },
+        select: "-password -confirmPassword",
+      };
+      var Data = await userModel.paginate(query, options);
+
+      if (Data.docs.length == 0) {
+        res.status(utils.Error_Code.NotFound).send(utils.Error_Message.NoData);
+      } else {
+        return Data;
       }
     } catch (error) {
       throw error;
